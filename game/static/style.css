@@ -1,0 +1,161 @@
+#game {
+    background: #89ff97;
+    width: 500px;
+    height: 500px;
+    margin: auto;
+}
+h2 {
+    margin-bottom: -20px;
+   }
+#main {
+    width: auto;	height: auto; /* Размеры */
+    background: #e8f9fc; /* Цвет фона */
+    border: 3px solid #fff; /* Белая рамка */
+    border-radius: 10px; /* Радиус скругления */
+    margin-top:1px;
+    padding:10px;
+    text-align: center;
+    color:#041226;
+	font-size: 20px;
+	font-family: Lucida, sans-serif;
+   }
+#center {
+    text-align: center;
+  }
+input{
+cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+padding:5px 25px; /*add some padding to the inside of the button*/
+background:#bfd7fc; /*the colour of the button*/
+border:1px solid #33842a; /*required or the default border for the browser will appear*/
+/*give the button curved corners, alter the size as required*/
+-moz-border-radius: 10px;
+-webkit-border-radius: 10px;
+border-radius: 10px;
+/*give the button a drop shadow*/
+-webkit-box-shadow: 0 0 4px rgba(0,0,0, .75);
+-moz-box-shadow: 0 0 4px rgba(0,0,0, .75);
+box-shadow: 0 0 4px rgba(0,0,0, .75);
+/*style the text*/
+color:#041226;
+font-size:1.1em;
+}
+/***NOW STYLE THE BUTTON'S HOVER AND FOCUS STATES***/
+input:hover, input:focus{
+background-color :#e3edfc; /*make the background a little darker*/
+/*reduce the drop shadow size to give a pushed button effect*/
+-webkit-box-shadow: 0 0 1px rgba(0,0,0, .75);
+-moz-box-shadow: 0 0 1px rgba(0,0,0, .75);
+box-shadow: 0 0 1px rgba(0,0,0, .75);
+}
+
+.block {
+    width: 100px;
+    height: 100px;
+    float: left;
+    border: 3px solid black;
+    box-sizing: border-box;
+    line-height:90px;
+    text-align:center;
+    font-size:90px;
+
+}
+.block:hover {
+    background: yellow;
+}
+
+*{
+    font-family: Georgia;
+}
+.b-container{
+    width:200px;
+    height:150px;
+    background-color: #42f4b6;
+    margin:0px auto;
+    padding:10px;
+    font-size:30px;
+    color: #0c0128;
+    text-align:center;
+    border-radius: 10px;
+}
+.b-popup{
+    width:100%;
+    min-height:100%;
+    background-color: rgba(0,0,0,0.5);
+    overflow:hidden;
+    position:fixed;
+    top:0px;
+}
+
+.b-popup .b-popup-content{
+    margin:40px auto 0px auto;
+    width:900px;
+    height: 408px;
+    padding:10px;
+    background-color: #c5c5c5;
+    border-radius:5px;
+    box-shadow: 0px 0px 10px #000;
+}
+
+
+.symbol{
+    width: 112px;
+    height: 100px;
+    float: left;
+    border: 3px solid black;
+    box-sizing: border-box;
+    line-height:90px;
+    text-align:center;
+    font-size:90px;
+
+}
+.symbol:hover {
+    background: red;
+}
+
+.clearing{
+margin:auto
+}
+
+#button {
+	position: fixed;
+	top: 353px;
+	right: 0;
+	background: #2fef99;
+	width: 28px;
+	height: 50px;
+	font: 40px Georgia;
+	color: #1c2621;
+	text-align: center;
+	-webkit-transition-duration: 0.3s;
+	-moz-transition-duration: 0.3s;
+	-o-transition-duration: 0.3s;
+	transition-duration: 0.3s;
+	-webkit-border-radius: 0 100px 100px 0;
+	-moz-border-radius: 0 5px 5px 0;
+	border-radius: 5px 0px 0px 5px;
+	}
+#usedWords {
+	position: fixed;
+	top: 53px;
+	right: -200px;
+	background: #a4f1c9;
+	width: 200px;
+	height: 450px;
+	padding: 100px 0 0 0;
+	-webkit-transition-duration: 0.3s;
+	-moz-transition-duration: 0.3s;
+	-o-transition-duration: 0.3s;
+	transition-duration: 0.3s;
+	-webkit-border-radius: 0 5px 0 0;
+	-moz-border-radius: 0 5px 0 0;
+	border-radius: 0 5px 0 0;
+	}
+#button:hover {
+	right: 200px;
+}
+#button:hover #usedWords {
+	right: 0;
+}
+.center {
+    text-align: center;
+  }

@@ -1,0 +1,19 @@
+{% load staticfiles %}
+<link rel="stylesheet" href="{% static '/style.css' %}">
+<title>Список игр</title>
+<div class="current_user" align="right">Привет, {{ username }}</div>
+{% for game in allGames %}
+    <div id="main">
+<h2><b>Игра #{{ game.id }}</b></h2>
+<br><b>Список участников:</b>
+{% for a in game.particapants.all  %}
+<br>
+ {{ a }}
+
+{% endfor %}
+<li><a href="/balda/games/join/{{game.id}} "> Присоединиться </a></li>
+        <p></p>
+</div>
+{% endfor %}
+<div id="center">
+<input type="button" value="Добавить новую игру" onClick='location.href="/balda/game/add"'></div>

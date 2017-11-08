@@ -1,0 +1,282 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static '/style.css' %}">
+    <script src="{% static '/jquery.js' %}"></script>
+    <script src="{% static '/popup.js' %}" defer></script>
+    <script src="{% static '/js.js' %}" defer></script>
+
+</head>
+<body>
+    <div style="overflow: hidden;">
+    <div style="width: 1000%;">
+        <div id="players" style="float: left; width: 500px; height:500px; margin:0px auto;">
+            <script>
+               var particapants = []
+               var players = []
+               var startWord ='{{startword }}'.toUpperCase()
+            </script>
+           {% for player in particapants.all %}
+
+
+            <li>{{ player }}</li>
+            <script>
+                particapants.push({{player.id}})
+                players.push(('{{player}}'))
+            </script>
+            <p>
+            Очки:
+            </p>
+            <div id={{player}}>
+                0
+            </div>
+            <hr>
+            {% endfor %}
+        </div>
+        <div id="game" style="float: left;"></div>
+        <div id="currentUser" style="float: left;">{{ username }}</div>
+        <br>
+
+        <div id="button"> !
+	<div id="usedWords">
+	</div>
+</div>
+    </div>
+</div>
+    <br>
+    <div class="center">
+<input type="button" value="Подтвердить слово" id="conf">
+        <br>
+        <br>
+        <div class="clearing"><a href="javascript:Clear(letterBlocks,elementId,newBlocks)">Очистить поле</a></div>
+
+    </div>
+    <br>
+   <div class="b-container" id="confirmWordField">
+
+    </div>
+<script>
+               var game_id = {{game_id}}
+               var gameStart = 0
+               var currentTurn = 0
+               var socket = new WebSocket('ws://' + window.location.host + '/balda/game/' + game_id + '/');
+               var elementMessage = $('#confirmWordField')
+               var allblock = document.getElementsByClassName('block')
+               var myWords = []
+               var userscore = 0
+               var startDivider = 3
+               var users = []
+               socket.onopen = function open() {
+                    console.log('WebSockets connection created.');
+
+                };
+
+            socket.onmessage = function (message) {
+                var data = JSON.parse(message.data)
+                var username = data.username
+                var userlist = data.userlist
+                var game_id = data.game_id
+
+                if (data.finishstatus != null) {
+
+                    alert("Игра закончена. Победил " + data.winner)
+                }
+                if (data.currentTurn != null){
+                        console.log(players[data.currentTurn % 3])
+                        document.getElementById('userToWait').innerHTML=players[data.currentTurn % 3]
+                    }
+                 $('li:contains("' + username + '")').css( "color", "green")
+                 $('#currentUsers').text(userlist)
+
+                if (data.userlist != null) {
+                    if (userlist.length === 3 && gameStart === 0) {
+                        gameStart = 1
+                        users = userlist
+                        socket.send(JSON.stringify({
+                            startPopUpStatus:'1',
+                            userlist:userlist,
+                            currentTurn:currentTurn,
+                            game_id:game_id
+                        }));
+
+                    }
+                }
+
+                if (data.startPopUp != null) {
+                    PopUpStartHide();
+                    if ($('#currentUser').text() != players[0])
+                    {
+                        PopUp2Show()
+                    }
+                }
+
+
+                if (data.wordStatus != null) {
+                    if (data.wordStatus === 'yes') {
+                userscore = document.getElementById(data.currentUser).innerHTML
+                userscore = parseInt(userscore,10) + parseInt(data.points)
+                myWords.push(data.word)
+                $('#usedWords').text('')
+                for (var i=0; i<myWords.length; i++){
+                    $('#usedWords').append(myWords[i])
+                    $('#usedWords').append('<br>')
+                }
+
+                document.getElementById(data.currentUser).innerHTML = userscore
+                    //$('#("' + username + '")').text(data.points)
+                        currentTurn = data.currentTurn
+                        console.log({{game_id}})
+                        socket.send(JSON.stringify({
+                            allowedBlocks: blueBlocks,
+                            letterBlocks: letterBlocks,
+                            unAllowedBlocks: redBlocks,
+                            elementId: elementId,
+                            symbol: allblock[elementId].innerHTML,
+                            currentTurn:currentTurn,
+                            newBlocks:newBlocks,
+                            game_id:{{game_id}},
+                        }));
+                    }
+                    if (data.wordStatus === 'no') {
+                        currentTurn = data.currentTurn
+                    }
+                if (data.currentUsers != null) {
+                    $('#currentUsers').append(currentUsers)
+                }
+                }
+
+                if (data.allowedBlocks != null) {
+                    blueBlocks = data.allowedBlocks
+                    redBlocks = data.unAllowedBlocks
+                    letterBlocks = data.letterBlocks
+                    newBlocks = data.newBlocks
+                    elementId = data.elementId
+                    symbol = data.symbol
+                    currentTurn = data.currentTurn
+                    PaintNew(elementId,blueBlocks,redBlocks)
+                    allblock[elementId].innerHTML=symbol
+
+                    if (currentTurn % 3 === elemNumber($('#currentUser').text(),players)) {
+                        PopUp2Hide();
+                        console.log('hide')
+                        newBlocks = [];
+                        elementId = ''
+                        addedLetters = 0;
+                        settedSymbol = 0
+                        prevElement = 30
+                        //clear не правильно отрабатывает. Возвращается к исходному. Остановился здесь. Проверял работу при трех клиентах
+                    }
+                    else {
+                        console.log('show')
+                        PopUp2Show();
+                    }
+
+                }
+            };
+
+            if (socket.readyState == WebSocket.OPEN) {
+                socket.onopen();
+            }
+
+             $(document).ready(function(){
+            $('#conf').click(function(e) {
+                console.log(document.getElementsByClassName('b-container')[0].innerHTML)
+                mWord = document.getElementsByClassName('b-container')[0].innerHTML
+                console.log(myWords)
+                var status = elemNumber(mWord.toLowerCase(),myWords)
+                console.log(status)
+                if (status === false && settedSymbol === 1 )
+                {
+                socket.send(JSON.stringify({
+                       word: document.getElementsByClassName('b-container')[0].innerHTML,
+                       currentTurn: currentTurn + 1,
+                       points:currentWord.length,
+                       currentUser:$('#currentUser').text(),
+                       game_id:game_id,
+                       userlist:users,
+
+                }));
+                } else {
+
+                Clear(letterBlocks,elementId,newBlocks)
+                }
+
+                for (var i=0; i<25; i++){
+            if (in_array(i,letterBlocks))
+            {
+                    blocks[i].style.background=''
+                }
+            }
+            currentWord = ''
+             })
+})
+
+window.onbeforeunload = function (e) {
+	var message = "Document 'foo' is not saved. You will lost the changes if you leave the page.";
+	if (typeof evt == "undefined") {
+		evt = window.event;
+	}
+	if (evt) {
+		evt.returnValue = message;
+	}
+	return message;
+}
+ </script>
+<div class="b-popup" id="popup1">
+    <div class="b-popup-content">
+        <div class="symbol">А</div>
+        <div class="symbol">Б</div>
+        <div class="symbol">В</div>
+        <div class="symbol">Г</div>
+        <div class="symbol">Д</div>
+        <div class="symbol">Е</div>
+        <div class="symbol">Ж</div>
+        <div class="symbol">З</div>
+        <div class="symbol">И</div>
+        <div class="symbol">Й</div>
+        <div class="symbol">К</div>
+        <div class="symbol">Л</div>
+        <div class="symbol">М</div>
+        <div class="symbol">Н</div>
+        <div class="symbol">О</div>
+        <div class="symbol">П</div>
+        <div class="symbol">Р</div>
+        <div class="symbol">С</div>
+        <div class="symbol">Т</div>
+        <div class="symbol">У</div>
+        <div class="symbol">Ф</div>
+        <div class="symbol">X</div>
+        <div class="symbol">Ц</div>
+        <div class="symbol">Ч</div>
+        <div class="symbol">Ш</div>
+        <div class="symbol">Щ</div>
+        <div class="symbol">Ъ</div>
+        <div class="symbol">Ы</div>
+        <div class="symbol">Ь</div>
+        <div class="symbol">Э</div>
+        <div class="symbol">Ю</div>
+        <div class="symbol">Я</div>
+    <a href="javascript:PopUpHide()">Закрыть</a>
+    </div>
+</div>
+<div class="b-popup" id="popup2">
+    <div class="b-popup-content">
+        Сейчас ходит игрок:
+        <div id="userToWait"></div></a>
+    </div>
+</div>
+
+<div class="b-popup" id="popupStart">
+    <div class="b-popup-content">
+        Подготовка к игре:
+        <p>
+            <div id="currentUsers"></div>
+
+    </div>
+</div>
+
+</body>
+</html>

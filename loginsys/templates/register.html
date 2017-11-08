@@ -1,0 +1,59 @@
+
+
+{% block login %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+
+
+      <style>
+
+
+#my {
+    text-align:center;
+   border: 1px solid #cccccc; //цвет рамки
+   border-radius: 3px; //закругление углов (общее)
+   -webkit-border-radius: 3px; //закругление углов (Google Chrome)
+   -moz-border-radius: 3px; //закругление углов (FireFox)
+   -khtml-border-radius: 3px; //закругление углов (Safari)
+   background: #ffffff !important; // желательно прописывать, так как в Chrome при сохранных данных оно может быть желтым
+   outline: none; // удаляет обводку в браузерах хром(желтая) и сафари(синяя)
+   height: 24px; // высота на свое усмотрение
+   width: 120px; // ширина на свое усмотрение
+   color: #cccccc; //цвет шрифта в обычном состоянии
+   font-size: 11px; // Размер шрифта
+   font-family: Tahoma; // Стиль шрифта
+}
+
+
+    </style>
+    <div class="large-offset-3 large-6 columns">
+        <form action="/auth/register/" method="post">
+
+            {% csrf_token %}
+            {% if form.error_dict %}
+      <p class="error">Пожалуйста исправьте нижеприведённые ошибки.</p>
+    {% endif %}
+
+    {% if form.username.errors %}
+      {{ form.username.html_error_list }}
+    {% endif %}
+            <div id="my">
+            <h1> <br> Регистрация пользователя:</h1>
+            Логин:
+            <h4>{{ form.username }}</h4>
+                {% if form.password1.errors %}
+      {{ form.password1.html_error_list }}
+    {% endif %}
+            Пароль:
+            <h4>{{ form.password1 }}</h4>
+            Подтвердите пароль:
+                {% if form.password2.errors %}
+      {{ form.password2.html_error_list }}
+    {% endif %}
+            <h4>{{ form.password2 }}</h4>
+
+            <br>
+            <input class="button" type="submit" value="Зарегистрироваться">
+            </div>
+        </form>
+    </div>
+{% endblock %}
